@@ -1,32 +1,19 @@
-interface Todo {
-  id: number;
-  title: string;
-  userId: number;
-  completed: boolean;
-}
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+import { Todo } from '../../types';
 
 interface Props {
   todo: Todo;
-  user?: User;
 }
 
-export const TodoInfo: React.FC<Props> = ({ todo, user }) => {
+export const TodoInfo: React.FC<Props> = ({ todo }) => {
   return (
     <article
       data-id={todo.id}
       className={`TodoInfo ${todo.completed ? 'TodoInfo--completed' : ''}`}
     >
       <h2 className="TodoInfo__title">{todo.title}</h2>
-      {user && (
-        <a className="UserInfo" href={`mailto:${user.email}`}>
-          {user.name}
+      {todo.user && (
+        <a className="UserInfo" href={`mailto:${todo.user.email}`}>
+          {todo.user.name}
         </a>
       )}
     </article>

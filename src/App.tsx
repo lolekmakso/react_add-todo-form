@@ -1,28 +1,25 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import './App.scss';
 import users from './api/users';
 import { TodoList } from './components/TodoList/TodoList';
-
-interface Todo {
-  id: number;
-  title: string;
-  userId: number;
-  completed: boolean;
-}
+import { Todo } from './types';
 
 export const App = () => {
   const [todos, setTodos] = useState<Todo[]>([
     {
-      id: 1,
+      id: uuidv4(),
       title: 'delectus aut autem',
       userId: 1,
       completed: false,
+      user: users.find(user => user.id === 1),
     },
     {
-      id: 2,
+      id: uuidv4(),
       title: 'quis ut nam facilis et officia qui',
       userId: 4,
       completed: false,
+      user: users.find(user => user.id === 4),
     },
   ]);
 
@@ -45,11 +42,18 @@ export const App = () => {
       return;
     }
 
+    const selectedUser = users.find(user => user.id === userId);
+
+    if (!selectedUser) {
+      return;
+    }
+
     const newTodo: Todo = {
-      id: Math.max(...todos.map(t => t.id), 0) + 1,
+      id: uuidv4(),
       title,
       userId,
       completed: false,
+      user: selectedUser,
     };
 
     setTodos(prev => [...prev, newTodo]);
@@ -68,8 +72,8 @@ export const App = () => {
             type="text"
             data-cy="titleInput"
             value={title}
-            onChange={e => {
-              setTitle(e.target.value);
+            onChange={event => {
+              setTitle(event.target.value);
               setError(prev => ({ ...prev, title: false }));
             }}
           />
@@ -80,8 +84,8 @@ export const App = () => {
           <select
             data-cy="userSelect"
             value={userId}
-            onChange={e => {
-              setUserId(Number(e.target.value));
+            onChange={event => {
+              setUserId(Number(event.target.value));
               setError(prev => ({ ...prev, user: false }));
             }}
           >
@@ -102,7 +106,7 @@ export const App = () => {
         </button>
       </form>
 
-      <TodoList todos={todos} users={users} />
+      <TodoList todos={todos} />
     </div>
   );
 };
